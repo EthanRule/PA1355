@@ -1,6 +1,6 @@
 -- CptS 355 - Spring 2023 -- Homework1 - Haskell
--- Name:
--- Collaborators:
+-- Name: Ethan Rule
+-- Collaborators: Richard Castoro, Darrel Nitereka
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 
 {-# HLINT ignore "Use camelCase" #-}
@@ -33,10 +33,6 @@ bag_diff (y : ys) xs
   | (count y ys - count y xs) >= 0 = y : bag_diff ys xs
   | otherwise = bag_diff ys xs
 
--- read the first value of ys
--- if y is in the list xs, remove it from xs
--- if y is not in xs, remove it from ys and add it to the return
-
 -- P2  everyN ; 10%
 
 everyN [] _ = []
@@ -50,24 +46,49 @@ everyN xs n = everyNHelper xs (n - 1)
 
 -- P3(a) make_sparse ; 15%
 
--- make_sparse [] = []
--- make_sparse (x : xs) = makeSparseHelper xs x
---   where
---     len = length xs
---     makeSparseHelper [] _ = []
---     makeSparseHelper (x : xs) n
---       | fst n > 0 = 0 : makeSparseHelper xs (fst n - 1, snd n)
---       | otherwise = snd n : makeSparseHelper xs x
---         where
---           counter x y =
+make_sparse [] = []
+make_sparse xs = makeSparseHelper xs 0
+  where
+    makeSparseHelper [] _ = []
+    makeSparseHelper ((index, num) : xs) currentIndex
+      | index == currentIndex = num : makeSparseHelper xs (currentIndex + 1)
+      | index /= currentIndex = 0 : makeSparseHelper ((index, num) : xs) (currentIndex + 1)
 
 -- P3(b) compress ; 15%
 
+compress [] = []
+compress (x:xs) = compressHelper (x:xs) 0
+  where
+    compressHelper [] _ = []
+    compressHelper (x:xs) index
+      | x == 0 = compressHelper xs (index + 1)
+      | x /= 0 = (index, x) : compressHelper xs (index + 1)
+
 -- P4 added_sums ; 8%
+added_sums [] = []
+added_sums (x:xs) = addHelper (x:xs) 0
+  where
+    addHelper [] _ = []
+    addHelper (x:xs) num = x + num : addHelper xs (num + x)
 
 -- P5 find_routes ; 8%
 
+find_routes request [] = []
+find_routes request ((route, dest):xs)
+  | request `elem` dest = route : find_routes request xs
+  | otherwise = find_routes request xs
+
 -- P6 group_sum ; 15%
+
+group_sum [] _ = []
+group_sum (x:xs) mult = sumHelper (x:xs) [] mult
+  where
+    sumHelper [] [] mult = []
+    sumHelper [] cList mult = [reverse cList] -- add any extra values to main list
+    sumHelper (x:xs) cList mult
+      | (x:xs) == [] = reverse cList : sumHelper xs [] mult -- add any extra values to main list
+      | mult < sum (x:cList) = reverse cList : sumHelper (x:xs) [] (mult*2) -- add clist to main list
+      | otherwise = sumHelper xs (x:cList) mult --add x to clist
 
 -- Assignment rules ; 3%
 -- Your own tests; please add your tests to the HW1Tests.hs file ; 6%

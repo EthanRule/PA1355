@@ -22,8 +22,8 @@ p6_test3 = TestCase (assertEqual "(group_sum-test3)"
 
 tests = TestList [
                    TestLabel "Problem 5- test1 " p6_test1,
-                   TestLabel "Problem 5- test2 " p6_test2,
-                   TestLabel "Problem 5- test3 " p6_test3
+                  TestLabel "Problem 5- test2 " p6_test2,
+                  TestLabel "Problem 5- test3 " p6_test3
                  ]
 
 -- shortcut to run the tests
